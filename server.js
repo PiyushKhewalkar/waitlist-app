@@ -4,11 +4,15 @@ import { PORT } from "./config/env.js"
 
 import connectToDatabase from "./database/mongodb.js"
 
+import cors from "cors"
+
 //router
 import templateRouter from "./routes/template.routes.js"
 import pageRouter from "./routes/page.routes.js"
 
 const app = express()
+
+app.use(cors())
 
 app.use(express.json());
 
