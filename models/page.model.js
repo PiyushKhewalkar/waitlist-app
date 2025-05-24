@@ -11,8 +11,14 @@ const pageSchema = new mongoose.Schema({
     pageLink: {
         type: String
     },
-    pageDomainName: {
+    thumbnail : {
+        type: String
+    },
+    subDomain: {
         type : String,
+    },
+    domain : {
+        type : String
     },
     pageCode : {
         type : String

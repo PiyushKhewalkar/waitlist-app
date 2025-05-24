@@ -38,57 +38,6 @@ export const getPage = async (req, res) => {
   }
 };
 
-// export const createPage = async (req, res) => {
-//   try {
-
-//     const {name, userPrompt} = req.body
-
-//     if (!name || !userPrompt) return res.status(500).json({message: "Please enter valid inputs"})
-
-//     const userRequirement = await getUserRequirement(userPrompt) // an ai service that returns structured user Requirement
-
-//     const templates = await Template.find()
-
-//     const templateEnum = templates.map((template) => {
-//       return {
-//         name: template.name,
-//         description: template.description,
-//         templateNumber: template.templateNumber
-//       }
-//     } )
-
-//     const chosenTemplate = await choosePageTemplate(userRequirement, templateEnum) // an ai service
-
-//     const templateNumber = chosenTemplate.templateNumber
-
-//     if (!templateNumber) {
-//       return res.status(500).json({ message: "AI failed to choose a valid template" });
-//     }
-
-//     const template = await Template.findOne({ templateNumber });
-
-//     const responseFormat = eval(template.responseFormat);
-
-//     const copy = await generateCopy(responseFormat) // an ai service
-
-//     const validatedCopy = schema.parse(copy);
-
-//     if (!validatedCopy) return res.status(500).json({message: "Copy format is not valid"})
-
-//     const code = ejs.render(template.code, validatedCopy)
-
-//     const page = new Page({
-//         name,
-//         pageCode: code
-//     })
-
-//     return res.status(201).json({message: "Page created succesfully", page})
-
-//   } catch (error) {
-//     return res.status(500).json({ error: "Internal Server Error", details : error.message });
-//   }
-// };
-
 export const createPage = async (req, res) => {
   try {
     const { name, userPrompt } = req.body;
@@ -186,3 +135,24 @@ export const deletePage = async (req, res) => {
       .json({ error: "Internal Server Error", details: error.message });
   }
 };
+
+export const publishPage = async(req, res) => {
+  try {
+
+    const {id} = req.params()
+    const {subdomainName} = req.body()
+
+    const page = await Page.findById(id)
+
+    if (!page) return res.status(404).json({message: "Page not found"})
+
+    // check subdomain availability
+
+    // connect to the domain
+    
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ error: "Internal Server Error", details: error.message });
+  }
+}
