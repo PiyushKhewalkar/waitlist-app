@@ -4,7 +4,7 @@ import { Parser } from "json2csv";
 
 export const getSubscribers = async (req, res) => {
   try {
-    const { pageId } = req.body;
+    const { pageId } = req.params;
 
     if (!pageId)
       return res.status(500).json({ message: "Page Id is required" });
@@ -28,22 +28,22 @@ export const getSubscribers = async (req, res) => {
   }
 };
 
-export const getSubscriber = async (req, res) => {
-  try {
-    const { id } = req.params;
+// export const getSubscriber = async (req, res) => {
+//   try {
+//     const { id } = req.params;
 
-    const subscriber = await Subscriber.findById({ id });
+//     const subscriber = await Subscriber.findById({ id });
 
-    if (!subscriber)
-      return res.status(404).json({ message: "Subscriber not found" });
+//     if (!subscriber)
+//       return res.status(404).json({ message: "Subscriber not found" });
 
-    return res.status(200).json({ subscriber });
-  } catch (error) {
-    return res
-      .status(500)
-      .json({ error: "Internal Server Error", details: error.message });
-  }
-};
+//     return res.status(200).json({ subscriber });
+//   } catch (error) {
+//     return res
+//       .status(500)
+//       .json({ error: "Internal Server Error", details: error.message });
+//   }
+// };
 
 export const deleteSubscriber = async (req, res) => {
   try {

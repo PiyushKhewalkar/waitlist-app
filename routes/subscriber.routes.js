@@ -4,8 +4,8 @@ import { getSubscriber, getSubscribers, deleteSubscriber, exportToCSV } from "..
 
 const subscriberRouter = Router()
 
-subscriberRouter.post("/", getSubscribers)
-subscriberRouter.get("/:id", getSubscriber)
+subscriberRouter.get("/:pageId", getSubscribers)
+// subscriberRouter.get("/:id", getSubscriber)
 subscriberRouter.delete("/:id/delete", deleteSubscriber)
 subscriberRouter.post("/export", exportToCSV)
 
