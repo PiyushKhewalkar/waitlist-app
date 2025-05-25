@@ -96,3 +96,41 @@ export const exportToCSV = async (req, res) => {
         .json({ error: "Internal Server Error", details: error.message });
     }
   };
+  
+  export const addSubscriber = async (req, res) => {
+    try {
+      const { pageId } = req.params;
+      const { name, email, phone } = req.body;
+  
+      // Basic validation
+      if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+      }
+  
+      // Find the corresponding page
+      const page = await Page.findById(pageId);
+      if (!page) {
+        return res.status(404).json({ message: "Page not found" });
+      }
+  
+      // Save new subscriber
+      const newSubscriber = new Subscriber({
+        name: name || null,
+        email,
+        phone: phone || null,
+        pageId,
+      });
+  
+      await newSubscriber.save();
+  
+      return res
+        .status(201)
+        .json({ message: "Subscriber added successfully", subscriber: newSubscriber });
+    } catch (error) {
+      return res.status(500).json({
+        error: "Internal Server Error",
+        details: error.message,
+      });
+    }
+  };
+  
