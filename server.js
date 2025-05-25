@@ -26,7 +26,7 @@ app.use(cors({origin: allowedOrigins, credentials: true}))
 app.use("/api/page", pageRouter)
 app.use("/api/template", templateRouter)
 app.use("/api/auth", authRouter)
-app.use("/api/subscribers", subscriberRouter)
+app.use("/api/subscriber", subscriberRouter)
 
 app.get("/", (req, res) => {
     res.send("Home")
