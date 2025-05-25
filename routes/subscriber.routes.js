@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { getSubscriber, getSubscribers, deleteSubscriber, exportToCSV } from "../controllers/subscribers.controller.js";
+import {getSubscribers, deleteSubscriber, exportToCSV } from "../controllers/subscribers.controller.js";
 
 const subscriberRouter = Router()
 
