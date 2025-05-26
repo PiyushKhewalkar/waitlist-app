@@ -2,17 +2,19 @@ import { Router } from "express";
 
 import { getPage, getPages, createPage, deletePage } from "../controllers/page.controller.js";
 
+import authorize from "../middlewares/auth.middleware.js";
+
 const pageRouter = Router()
 
-pageRouter.get("/", getPages)
+pageRouter.get("/", authorize, getPages)
 
-pageRouter.get("/:id", getPage)
+pageRouter.get("/:id", authorize, getPage)
 
-pageRouter.post("/create", createPage)
+pageRouter.post("/create", authorize, createPage)
 
 // pageRouter.put("/:id/update", )
 
-pageRouter.delete("/:id/delete", deletePage)
+pageRouter.delete("/:id/delete", authorize, deletePage)
 
 export default pageRouter
 

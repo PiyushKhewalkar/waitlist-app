@@ -33,7 +33,7 @@ export const register = async(req,res) => {
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
 
-        return res.status(201).json({success: true, message: "User Registered succesfully"})
+        return res.status(201).json({success: true, token, message: "User Registered succesfully"})
         
     } catch (error) {
         res.status(500).json({success: false, error: error.message})
@@ -64,7 +64,7 @@ export const login = async(req, res) => {
                     maxAge: 7 * 24 * 60 * 60 * 1000
                 })
 
-            return res.status(200).json({success: true, message: "User Logged In succesfully"})
+            return res.status(200).json({success: true, token, message: "User Logged In succesfully"})
             
         } catch (error) {
             res.status(500).json({success: false, error: error.message})

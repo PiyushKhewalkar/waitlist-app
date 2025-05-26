@@ -12,10 +12,6 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    pages : [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Page"
-    }],
     plan : {
         type: String,
         enum: ["free", "starter", "pro", "growth"],

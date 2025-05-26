@@ -12,7 +12,7 @@ import {
 
 export const getPages = async (req, res) => {
   try {
-    const pages = await Page.find();
+    const pages = await Page.find({ userId: req.user._id });
 
     return res.status(200).json({ pages });
   } catch (error) {
@@ -26,9 +26,8 @@ export const getPage = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const page = await Page.findById(id);
-
-    if (!page) return res.status(404).json({ message: "page not found" });
+    const page = await Page.findOne({ _id: id, userId: req.user._id });
+    if (!page) return res.status(404).json({ message: "Page not found" });
 
     return res.status(200).json({ page });
   } catch (error) {
@@ -106,6 +105,7 @@ export const createPage = async (req, res) => {
     const page = new Page({
       name,
       pageCode: `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Document</title></head><body>${code}</body></html>`,
+      userId: req.user._id,
     });
 
     await page.save();
@@ -124,7 +124,9 @@ export const deletePage = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const deletedPage = await Page.findByIdAndDelete(id);
+    const deletedPage = await Page.findOneAndDelete({ _id: id, userId: req.user._id });
+
+if (!deletedPage) return res.status(404).json({ message: "Page not found or not yours" });
 
     return res
       .status(201)
@@ -136,23 +138,21 @@ export const deletePage = async (req, res) => {
   }
 };
 
-export const publishPage = async(req, res) => {
+export const publishPage = async (req, res) => {
   try {
+    const { id } = req.params();
+    const { subdomainName } = req.body();
 
-    const {id} = req.params()
-    const {subdomainName} = req.body()
+    const page = await Page.findById(id);
 
-    const page = await Page.findById(id)
-
-    if (!page) return res.status(404).json({message: "Page not found"})
+    if (!page) return res.status(404).json({ message: "Page not found" });
 
     // check subdomain availability
 
     // connect to the domain
-    
   } catch (error) {
     return res
       .status(500)
       .json({ error: "Internal Server Error", details: error.message });
   }
-}
+};
