@@ -12,6 +12,6 @@ templateRouter.post("/create", createTemplate)
 
 templateRouter.put("/:id/update", updateTemplate)
 
-templateRouter.delete("/:id/delete", deleteTemplate)
+templateRouter.delete("/:id", deleteTemplate)
 
 export default templateRouter

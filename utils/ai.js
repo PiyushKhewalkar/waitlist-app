@@ -85,7 +85,7 @@ Instructions:
 }
 
 
-export const generateCopy = async(responseFormat, requirement) => {
+export const generateCopy = async(responseFormat, requirement, pageId) => {
     const response = await openai.responses.parse({
         model: "gpt-4o-mini",
         input: [
@@ -106,7 +106,9 @@ requirement: ${requirement}`
         },
       });
 
-      const result = response.output_parsed;
+      let result = response.output_parsed;
+
+      result.pageId = pageId
 
       return result
 }

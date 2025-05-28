@@ -169,17 +169,14 @@
       let pageId = "683441a4abb3483cc2e38e47";
 
       function sendData(inputValue) {
-        fetch(`https://waitlist-app-ugpw.onrender.com/api/subscriber/${pageId}`, {
+        fetch(`http://localhost:5500/api/subscriber/${pageId}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ input: inputValue }), // You can change the key as needed
+          body: JSON.stringify({ email: inputValue }), // You can change the key as needed
         })
           .then((response) => {
-            if (!response.ok) {
-              throw new Error("Network response was not ok");
-            }
             return response.json(); // If expecting JSON in response
           })
           .then((data) => {
