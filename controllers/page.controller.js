@@ -48,6 +48,13 @@ export const createPage = async (req, res) => {
       return res.status(400).json({ message: "Please enter valid inputs" });
     }
 
+    let page = new Page({
+      name,
+      userId: req.user._id,
+    })
+
+    await page.save()
+
     console.log("[STEP] Getting user requirement from AI...");
     const userRequirement = await getUserRequirement(userPrompt);
     console.log("[RESULT] User requirement:", userRequirement);
@@ -90,7 +97,7 @@ export const createPage = async (req, res) => {
     }
 
     console.log("[STEP] Generating copy using AI...");
-    const copy = await generateCopy(schema, userRequirement);
+    const copy = await generateCopy(schema, userRequirement, page._id);
     console.log("[RESULT] Copy generated:", copy);
 
     console.log("[STEP] Validating copy against schema...");
@@ -102,11 +109,8 @@ export const createPage = async (req, res) => {
     console.log("[RESULT] Page code rendered: ", code);
 
     console.log("[STEP] Saving page to database...");
-    const page = new Page({
-      name,
-      pageCode: `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Document</title></head><body>${code}</body></html>`,
-      userId: req.user._id,
-    });
+    
+    page.pageCode = code
 
     await page.save();
     console.log("[RESULT] Page saved successfully");
