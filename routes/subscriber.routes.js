@@ -10,6 +10,6 @@ subscriberRouter.get("/:pageId", authorize, getSubscribers)
 // subscriberRouter.get("/:id", getSubscriber)
 subscriberRouter.delete("/:id/delete", authorize, deleteSubscriber)
 subscriberRouter.post("/export", authorize, exportToCSV)
-subscriberRouter.post("/:pageId", authorize, addSubscriber)
+subscriberRouter.post("/:pageId", addSubscriber)
 
 export default subscriberRouter

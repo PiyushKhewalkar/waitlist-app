@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title><%= title || 'Social Platform Landing Page' %></title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+
+  <!-- Styles -->
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; }
+    body { background: linear-gradient(135deg, #0f2542 0%, #1a3a64 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; color: #fff; margin: 0; padding: 0; }
+    .container { width: 100%; min-height: 100vh; display: flex; justify-content: center; align-items: center; }
+    .main-content { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; max-width: 1200px; width: 100%; }
+    h1 { font-size: 4.5rem; line-height: 1.1; font-weight: 700; margin-bottom: 30px; text-align: center; letter-spacing: -0.02em; }
+    .description { font-size: 1.25rem; line-height: 1.6; color: rgba(255, 255, 255, 0.9); margin-bottom: 40px; max-width: 700px; text-align: center; }
+    .waitlist-form { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 500px; gap: 15px; }
+    @media (min-width: 768px) { .waitlist-form { flex-direction: row; gap: 10px; } }
+    .email-input { width: 100%; padding: 20px 24px; border-radius: 12px; border: 2px solid rgba(255, 255, 255, 0.2); background: rgba(255, 255, 255, 0.05); color: #fff; font-size: 1.125rem; outline: none; transition: all 0.3s ease; }
+    .email-input::placeholder { color: rgba(255, 255, 255, 0.5); }
+    .email-input:focus { border-color: rgba(255, 255, 255, 0.5); background: rgba(255, 255, 255, 0.1); }
+    .join-button { padding: 20px 40px; background-color: #1a75ff; color: white; border: none; border-radius: 12px; font-size: 1.125rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; white-space: nowrap; min-width: 180px; }
+    .join-button:hover { background-color: #0066ff; transform: translateY(-2px); }
+    .join-button:active { transform: translateY(0); }
+    @media (max-width: 768px) {
+      h1 { font-size: 3rem; }
+      .description { font-size: 1.125rem; }
+      .email-input, .join-button { padding: 16px 24px; font-size: 1rem; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="main-content">
+      <h1><%= heading || 'Explore And Enjoy<br>New Social Era' %></h1>
+      <p class="description"><%= description || "Enjoy unlimited opportunities and meet new people on our platform! It's a place where you create connections, share passions and discover inspiring stories." %></p>
+      
+      <form class="waitlist-form" method="POST" action="/join">
+        <input
+          type="email"
+          name="email"
+          placeholder="Enter your email"
+          class="email-input"
+          aria-label="Email address"
+          required
+        />
+        <button type="submit" class="join-button">Join waitlist</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const mainContent = document.querySelector('.main-content');
+      mainContent.style.opacity = '0';
+      
+      setTimeout(() => {
+        mainContent.style.transition = 'opacity 0.8s ease';
+        mainContent.style.opacity = '1';
+      }, 100);
+    });
+  </script>
+</body>
+</html>
