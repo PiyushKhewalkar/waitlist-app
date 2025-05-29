@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import {getSubscribers, deleteSubscriber, exportToCSV, addSubscriber } from "../controllers/subscribers.controller.js";
+import {getSubscribers, deleteSubscriber, exportToCSV, addSubscriber, updateSubscriber } from "../controllers/subscribers.controller.js";
 
 import authorize from "../middlewares/auth.middleware.js";
 
@@ -11,5 +11,6 @@ subscriberRouter.get("/:pageId", authorize, getSubscribers)
 subscriberRouter.delete("/:id", authorize, deleteSubscriber)
 subscriberRouter.post("/export", authorize, exportToCSV)
 subscriberRouter.post("/:pageId", addSubscriber)
+subscriberRouter.put("/:id", authorize, updateSubscriber)
 
 export default subscriberRouter
