@@ -130,3 +130,49 @@ export const addSubscriber = async (req, res) => {
     });
   }
 };
+
+export const updateSubscriber = async(req, res) => {
+  try {
+
+    const {id} = req.params
+
+    const {email, phone, name} = req.body
+
+    if (!email && !phone && !name) return res.status(400).json({message: "Missing Info"})
+
+    const subscriber = await Subscriber.findById(id)
+
+    if (!subscriber) return res.status(404).json({message: "Subscriber not found"})
+
+      // Check if logged-in user owns the page that subscriber belongs to
+    const page = await Page.findOne({
+      _id: subscriber.pageId,
+      userId: req.user._id,
+    });
+
+    if (!page) return res.status(403).json({ message: "Unauthorized" });
+
+    if (email) {
+      subscriber.email = email
+    }
+
+    if (phone) {
+      subscriber.phone = phone
+    }
+
+    if (name) {
+      subscriber.name = name
+    }
+
+    await subscriber.save()
+
+    return res.status(200).json({message: "Subscriber edited successfully"})
+    
+    
+  } catch (error) {
+    return res.status(500).json({
+      error: "Internal Server Error",
+      details: error.message,
+    });
+  }
+}
