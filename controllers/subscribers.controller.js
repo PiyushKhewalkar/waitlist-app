@@ -111,6 +111,10 @@ export const addSubscriber = async (req, res) => {
       pageId,
     });
 
+    page.subscribers += 1;
+
+    await page.save()
+
     await newSubscriber.save();
 
     return res
