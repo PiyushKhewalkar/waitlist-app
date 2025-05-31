@@ -1,5 +1,6 @@
 import Page from "../models/page.model.js";
 import Template from "../models/template.model.js";
+import User from "../models/user.model.js";
 import ejs from "ejs";
 import { z } from "zod";
 
@@ -68,6 +69,7 @@ export const createPage = async (req, res) => {
       description: t.description,
       templateNumber: t.templateNumber,
     }));
+
     console.log("[STEP] Template choices created:", templateChoices);
 
     console.log("[STEP] Choosing the best template...");
@@ -97,7 +99,7 @@ export const createPage = async (req, res) => {
     }
 
     console.log("[STEP] Generating copy using AI...");
-    const copy = await generateCopy(schema, userRequirement, page._id);
+    const copy = await generateCopy(schema, userRequirement);
     console.log("[RESULT] Copy generated:", copy);
 
     console.log("[STEP] Validating copy against schema...");
@@ -105,7 +107,11 @@ export const createPage = async (req, res) => {
     console.log("[RESULT] Copy validated");
 
     console.log("[STEP] Rendering EJS template...");
-    const code = ejs.render(template.templateCode, validatedCopy);
+    const code = ejs.render(template.templateCode, {
+      ...validatedCopy,
+      pageId: page._id.toString(), // <--- inject this into the rendered HTML
+    });
+    
     console.log("[RESULT] Page code rendered: ", code);
 
     console.log("[STEP] Saving page to database...");
@@ -113,6 +119,14 @@ export const createPage = async (req, res) => {
     page.pageCode = code
 
     await page.save();
+
+    const user = await User.findById(req.user._id)
+
+    if (!user) return res.status(404).json({message: "User not found"})
+
+    user.usage.totalPages++
+
+    user.save()
     console.log("[RESULT] Page saved successfully");
 
     return res.status(201).json({ message: "Page created successfully", page });
@@ -160,3 +174,17 @@ export const publishPage = async (req, res) => {
       .json({ error: "Internal Server Error", details: error.message });
   }
 };
+
+
+export const updatePage = async(req, res) => {
+  try {
+
+    const {id} = req.params
+    const {heading} = req.body
+
+
+    
+  } catch (error) {
+    
+  }
+}

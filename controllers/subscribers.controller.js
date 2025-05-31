@@ -1,6 +1,7 @@
 import Subscriber from "../models/subscriber.model.js";
 import Page from "../models/page.model.js";
 import { Parser } from "json2csv";
+import User from "../models/user.model.js";
 
 export const getSubscribers = async (req, res) => {
   try {
@@ -116,6 +117,11 @@ export const addSubscriber = async (req, res) => {
     await page.save()
 
     await newSubscriber.save();
+
+    const user = await User.findById(req.user._id)
+
+    user.usage.totalEmails += 1;
+    await user.save();
 
     return res
       .status(201)

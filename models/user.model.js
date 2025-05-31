@@ -16,6 +16,16 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ["free", "starter", "pro", "growth"],
         default: "free"
+    },
+    usage: {
+        totalPages : {
+            type: Number,
+            default: 0
+        },
+        totalEmails: {
+            type: Number,
+            default: 0
+        }
     }
 
 },

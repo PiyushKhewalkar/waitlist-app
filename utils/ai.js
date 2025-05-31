@@ -85,7 +85,7 @@ Instructions:
 }
 
 
-export const generateCopy = async(responseFormat, requirement, pageId) => {
+export const generateCopy = async(responseFormat, requirement) => {
     const response = await openai.responses.parse({
         model: "gpt-4o-mini",
         input: [
@@ -98,7 +98,11 @@ Instructions:
 - Output ONLY the filled schema as a JSON object.
 - Do not include explanations, comments, or any extra text.
 
-requirement: ${requirement}`
+requirement: ${requirement.requirement}`
+},
+{
+  role: "user",
+  content: requirement.requirement,
 }
         ],
         text: {
@@ -107,8 +111,7 @@ requirement: ${requirement}`
       });
 
       let result = response.output_parsed;
-
-      result.pageId = pageId
+      console.log(result, "result")
 
       return result
 }

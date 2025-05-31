@@ -13,6 +13,7 @@ import templateRouter from "./routes/template.routes.js"
 import pageRouter from "./routes/page.routes.js"
 import authRouter from "./routes/auth.routes.js"
 import subscriberRouter from "./routes/subscriber.routes.js"
+import userRouter from "./routes/user.routes.js"
 
 const app = express()
 
@@ -27,6 +28,7 @@ app.use("/api/page", pageRouter)
 app.use("/api/template", templateRouter)
 app.use("/api/auth", authRouter)
 app.use("/api/subscriber", subscriberRouter)
+app.use("/api/user", userRouter)
 
 app.get("/", (req, res) => {
     res.send("Home")
