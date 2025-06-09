@@ -20,7 +20,7 @@ const app = express()
 app.use(express.json())
 app.use(cookieParser())
 
-const allowedOrigins = ["http://localhost:5173", "http://127.0.0.1:5501"]
+const allowedOrigins = ["http://localhost:5173", "http://127.0.0.1:5501", "https://hypelister.com"]
 
 app.use(cors({origin: allowedOrigins, credentials: true}))
 
