@@ -28,6 +28,22 @@ export const getUser = async(req, res) => {
     }
 }
 
+export const getSelf = async(req, res) => {
+    try {
+
+        const {id} = req.user._id
+
+        const user = await User.findById(id)
+
+        if (!user) return res.status(404).jsno({message: "User Not Found"})
+
+        return res.status(200).json({user})
+        
+    } catch (error) {
+        return res.status(500).json({ error: "Internal Server Error", details : error.message });
+    }
+}
+
 export const deleteUser = async(req, res) => {
     try {
 
