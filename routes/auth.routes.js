@@ -12,6 +12,6 @@ authRouter.get("/logout", logout)
 
 authRouter.get("/verify/:token", verifyEmail)
 
-authRouter.post("/resendEmailVerification", resendEmailVerification)
+authRouter.post("/resendemailverification", resendEmailVerification)
 
 export default authRouter
