@@ -33,7 +33,11 @@ export const getSelf = async(req, res) => {
 
         const id = req.user._id
 
+        console.log("userId: ", id)
+
         const user = await User.findById(id)
+
+         console.log("me: ", user)
 
         if (!user) return res.status(404).json({message: "User Not Found"})
 
