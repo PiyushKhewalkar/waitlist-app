@@ -45,7 +45,7 @@ export const register = async (req, res) => {
 
     return res
       .status(201)
-      .json({ success: true, token, message: "User Registered succesfully" });
+      .json({ success: true, token, message: "User Registered succesfully", user });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
@@ -68,9 +68,10 @@ export const login = async (req, res) => {
         .json({ success: false, message: "user doesn't exist" });
 
     if (!user.isVerified) {
+    await emailVerification(user.email)
       return res
         .status(403)
-        .json({ message: "Please verify your email first." });
+        .json({ message: "Please verify your email first, we have sent a verification link on your email" });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
@@ -91,7 +92,7 @@ export const login = async (req, res) => {
 
     return res
       .status(200)
-      .json({ success: true, token, message: "User Logged In succesfully" });
+      .json({ success: true, token, message: "User Logged In succesfully", user });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
@@ -125,8 +126,6 @@ export const verifyEmail = async (req, res) => {
     user.isVerified = true;
     user.verificationToken = null;
     await user.save();
-
-    res.redirect("https://hypelister.com/home")
 
     return res.status(200).json({ message: "Email verified successfully" });
   } catch (err) {

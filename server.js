@@ -17,12 +17,12 @@ import userRouter from "./routes/user.routes.js"
 
 const app = express()
 
-app.use(express.json())
-app.use(cookieParser())
-
-const allowedOrigins = ["http://localhost:5173", "http://127.0.0.1:5501", "https://hypelister.com", "https://www.hypelister.com", "http://localhost:3000"]
+const allowedOrigins = ["http://localhost:5173", "http://127.0.0.1:5501", "https://hypelister.com", "https://www.hypelister.com", "http://localhost:3000", "https://waitlist-app-ugpw.onrender.com"]
 
 app.use(cors({origin: allowedOrigins, credentials: true}))
+
+app.use(express.json())
+app.use(cookieParser())
 
 app.use("/api/page", pageRouter)
 app.use("/api/template", templateRouter)
