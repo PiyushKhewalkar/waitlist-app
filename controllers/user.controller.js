@@ -31,7 +31,7 @@ export const getUser = async(req, res) => {
 export const getSelf = async(req, res) => {
     try {
 
-        const {id} = req.user._id
+        const id = req.user._id
 
         const user = await User.findById(id)
 
