@@ -2,87 +2,134 @@ import User from "../models/user.model.js";
 
 import { JWT_SECRET, NODE_ENV } from "../config/env.js";
 
-import bcrypt from "bcryptjs"
-import jwt from "jsonwebtoken"
+import emailVerification from "../utils/tokenSender.js";
 
-export const register = async(req,res) => {
-    const {email, password} = req.body
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
-    if (!email || !password) return res.status(500).json({success:false, message: "details are missing"})
+export const register = async (req, res) => {
+  const { email, password } = req.body;
 
-    try {
-        const existingUser = await User.findOne({email})
+  if (!email || !password)
+    return res
+      .status(500)
+      .json({ success: false, message: "details are missing" });
 
-        if (existingUser) return res.status(500).json({success: false, message: "User Already Exists"})
+  try {
+    const existingUser = await User.findOne({ email });
 
-        const hashedPassword = await bcrypt.hash(password, 10)
+    if (existingUser)
+      return res
+        .status(500)
+        .json({ success: false, message: "User Already Exists" });
 
-        const user = new User({
-            email,
-            password: hashedPassword
-        })
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-        await user.save()
+    const user = new User({
+      email,
+      password: hashedPassword,
+    });
 
-        const token = jwt.sign({id: user._id}, JWT_SECRET, {expiresIn: '7d'})
+    await user.save();
 
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: NODE_ENV === "production",
-            sameSite: NODE_ENV == 'production' ? 'none' : 'strict',
-            maxAge: 7 * 24 * 60 * 60 * 1000
-        })
+    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "7d" });
 
-        return res.status(201).json({success: true, token, message: "User Registered succesfully"})
-        
-    } catch (error) {
-        res.status(500).json({success: false, error: error.message})
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: NODE_ENV === "production",
+      sameSite: NODE_ENV == "production" ? "none" : "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    emailVerification(user.email)
+
+    return res
+      .status(201)
+      .json({ success: true, token, message: "User Registered succesfully" });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+export const login = async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password)
+    return res
+      .status(500)
+      .json({ success: false, message: "Email and Password are required" });
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user)
+      return res
+        .status(404)
+        .json({ success: false, message: "user doesn't exist" });
+
+    if (!user.isVerified) {
+      return res
+        .status(403)
+        .json({ message: "Please verify your email first." });
     }
-}
 
-export const login = async(req, res) => {
-    const {email, password} = req.body
+    const isMatch = await bcrypt.compare(password, user.password);
 
-    if (!email || !password) return res.status(500).json({success:false, message: "Email and Password are required"})
+    if (!isMatch)
+      return res
+        .status(500)
+        .json({ success: false, message: "invalid password" });
 
-        try {
+    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "7d" });
 
-            const user = await User.findOne({email})
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: NODE_ENV === "production",
+      sameSite: NODE_ENV == "production" ? "none" : "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
 
-            if (!user) return res.status(404).json({success: false, message: "user doesn't exist"})
+    return res
+      .status(200)
+      .json({ success: true, token, message: "User Logged In succesfully" });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
 
-            const isMatch = await bcrypt.compare(password, user.password)
+export const logout = async (req, res) => {
+  try {
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: NODE_ENV === "production",
+      sameSite: NODE_ENV == "production" ? "none" : "strict",
+    });
 
-            if (!isMatch) return res.status(500).json({success: false, message: "invalid password"})
+    return res
+      .status(200)
+      .json({ success: true, message: "User logged out succesfully!" });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
 
-                const token = jwt.sign({id: user._id}, JWT_SECRET, {expiresIn: '7d'})
+export const verifyEmail = async (req, res) => {
+  const { token } = req.params;
 
-                res.cookie('token', token, {
-                    httpOnly: true,
-                    secure: NODE_ENV === "production",
-                    sameSite: NODE_ENV == 'production' ? 'none' : 'strict',
-                    maxAge: 7 * 24 * 60 * 60 * 1000
-                })
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findOne({ email: decoded.email });
 
-            return res.status(200).json({success: true, token, message: "User Logged In succesfully"})
-            
-        } catch (error) {
-            res.status(500).json({success: false, error: error.message})
-        }
-}
+    if (!user) return res.status(400).json({ message: "User not found" });
 
-export const logout = async(req, res) => {
-    try {
+    user.isVerified = true;
+    user.verificationToken = null;
+    await user.save();
 
-        res.clearCookie('token', {
-            httpOnly: true, 
-            secure: NODE_ENV === 'production',
-            sameSite: NODE_ENV == 'production' ? 'none' : 'strict'
-        })
+    res.redirect("https://hypelister.com/home")
 
-        return res.status(200).json({success:true, message: "User logged out succesfully!"})
-        
-    } catch (error) {
-        res.status(500).json({success: false, error: error.message})
-    }
-}
+    return res.status(200).json({ message: "Email verified successfully" });
+  } catch (err) {
+    return res.status(400).json({ message: "Invalid or expired token" });
+  }
+};
