@@ -7,7 +7,7 @@ userRouter.get("/", getUsers)
 
 userRouter.get("/:id", getUser)
 
-userRouter.get("/:id/self", getSelf)
+userRouter.get("/self", getSelf)
 
 userRouter.delete("/:id", deleteUser)
 
