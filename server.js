@@ -18,7 +18,7 @@ import userRouter from "./routes/user.routes.js"
 
 const app = express()
 
-const allowedOrigins = ["http://localhost:5173", "http://127.0.0.1:5501", "https://hypelister.com", "https://www.hypelister.com", "http://localhost:3000", "https://waitlist-app-ugpw.onrender.com"]
+const allowedOrigins = ["http://localhost:5173", "http://127.0.0.1:5501", "https://hypelister.com", "https://www.hypelister.com", "http://localhost:3000", "https://waitlist-app-ugpw.onrender.com", "https://waitlist.hypelister.com"]
 
 app.use(cors({origin: allowedOrigins, credentials: true}))
 
