@@ -159,15 +159,26 @@ if (!deletedPage) return res.status(404).json({ message: "Page not found or not 
 export const publishPage = async (req, res) => {
   try {
     const { id } = req.params();
-    const { subdomainName } = req.body();
+    const { pathName } = req.body();
 
     const page = await Page.findById(id);
 
     if (!page) return res.status(404).json({ message: "Page not found" });
 
-    // check subdomain availability
+    // check pathName availability
 
-    // connect to the domain
+    const existingPath = await Page.findOne({pathName: pathName})
+
+    if (existingPath) return res.status(400).json({message: "This path is already taken"})
+
+      page.pathName = pathName
+
+      await page.save()
+
+      res.setHeader("Content-Type", "text/html");
+      
+      res.send(page.html);
+    
   } catch (error) {
     return res
       .status(500)

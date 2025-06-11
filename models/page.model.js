@@ -14,7 +14,7 @@ const pageSchema = new mongoose.Schema({
     thumbnail : {
         type: String
     },
-    subDomain: {
+    pathName: {
         type : String,
     },
     domain : {

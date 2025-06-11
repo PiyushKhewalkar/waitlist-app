@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { getPage, getPages, createPage, deletePage } from "../controllers/page.controller.js";
+import { getPage, getPages, createPage, deletePage, publishPage } from "../controllers/page.controller.js";
 
 import authorize from "../middlewares/auth.middleware.js";
 import { checkLimit } from "../middlewares/checkLimit.middlewear.js";
@@ -12,6 +12,8 @@ pageRouter.get("/", authorize, getPages)
 pageRouter.get("/:id", authorize, getPage)
 
 pageRouter.post("/create", authorize, checkLimit("totalPages"), createPage)
+
+pageRouter.post("/publish/:id", authorize, publishPage)
 
 // pageRouter.put("/:id/update", )
 

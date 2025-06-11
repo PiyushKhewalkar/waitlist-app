@@ -3,6 +3,7 @@ import express from "express"
 import { PORT } from "./config/env.js"
 
 import connectToDatabase from "./database/mongodb.js"
+import Page from "./models/page.model.js"
 
 import cors from "cors"
 
@@ -29,6 +30,23 @@ app.use("/api/template", templateRouter)
 app.use("/api/auth", authRouter)
 app.use("/api/subscriber", subscriberRouter)
 app.use("/api/user", userRouter)
+
+app.get("/public/:pathName", async (req, res) => {
+  try {
+    const page = await Page.findOne({ pathName: req.params.pathName });
+
+    if (!page) {
+      return res.status(404).send("Page not found");
+    }
+
+    res.setHeader("Content-Type", "text/html");
+    res.send(page.pageCode);
+  } catch (error) {
+    console.error("Error serving public page:", error.message);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
 
 app.get("/", (req, res) => {
     res.send("Home")
