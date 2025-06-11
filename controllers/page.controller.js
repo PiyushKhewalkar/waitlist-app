@@ -158,33 +158,37 @@ if (!deletedPage) return res.status(404).json({ message: "Page not found or not 
 
 export const publishPage = async (req, res) => {
   try {
-    const { id } = req.params();
-    const { pathName } = req.body();
+    const { id } = req.params;
+    const { pathName } = req.body;
 
+    // 1. Find the page
     const page = await Page.findById(id);
-
     if (!page) return res.status(404).json({ message: "Page not found" });
 
-    // check pathName availability
+    // 2. Check if path is already taken
+    const existingPath = await Page.findOne({ pathName });
+    if (existingPath)
+      return res.status(400).json({ message: "This path is already taken" });
 
-    const existingPath = await Page.findOne({pathName: pathName})
+    // 3. Assign and save
+    page.pathName = pathName;
+    page.pageLink = `https://waitlist.hypelister.com/public/${pathName}`;
+    await page.save();
 
-    if (existingPath) return res.status(400).json({message: "This path is already taken"})
+    // 4. Return confirmation
+    return res.status(200).json({
+      message: "Page published successfully",
+      pathName: page.pathName,
+      pageLink: page.pageLink,
+    });
 
-      page.pathName = pathName
-
-      await page.save()
-
-      res.setHeader("Content-Type", "text/html");
-      
-      res.send(page.html);
-    
   } catch (error) {
     return res
       .status(500)
       .json({ error: "Internal Server Error", details: error.message });
   }
 };
+
 
 
 export const updatePage = async(req, res) => {
