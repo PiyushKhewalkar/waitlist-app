@@ -46,6 +46,8 @@ export const deleteSubscriber = async (req, res) => {
 
     await subscriber.deleteOne();
 
+    page.subscribers -= 1
+
     return res
       .status(200)
       .json({ message: "Subscriber deleted successfully", subscriber });
