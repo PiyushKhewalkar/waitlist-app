@@ -19,6 +19,6 @@ pageRouter.post("/publish/:id", authorize, publishPage)
 
 pageRouter.delete("/:id/delete", authorize, deletePage)
 
-pageRouter.get("/capture/:id", captureView)
+pageRouter.post("/capture/:id", captureView)
 
 export default pageRouter
