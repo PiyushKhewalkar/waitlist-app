@@ -204,9 +204,17 @@ export const captureView = async (req, res) => {
 
     const { pageId } = req.params;
 
-  await Page.findByIdAndUpdate(pageId, {
+  const updatedPage = await Page.findByIdAndUpdate(pageId, {
     $inc: { views: 1 },
   });
+
+  if (!updatedPage) {
+  return res.status(404).json({ error: "Page not found" });
+}
+
+await updatedPage.save()
+
+console.log("view counted")
 
   return res.status(200).json({ message: "View captured" });
     
