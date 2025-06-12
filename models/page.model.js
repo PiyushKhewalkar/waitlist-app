@@ -17,6 +17,10 @@ const pageSchema = new mongoose.Schema({
     pathName: {
         type : String,
     },
+    views: {
+        type: Number,
+        default: 0
+    },
     domain : {
         type : String
     },

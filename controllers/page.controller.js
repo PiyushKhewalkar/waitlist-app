@@ -52,9 +52,9 @@ export const createPage = async (req, res) => {
     let page = new Page({
       name,
       userId: req.user._id,
-    })
+    });
 
-    await page.save()
+    await page.save();
 
     console.log("[STEP] Getting user requirement from AI...");
     const userRequirement = await getUserRequirement(userPrompt);
@@ -111,22 +111,22 @@ export const createPage = async (req, res) => {
       ...validatedCopy,
       pageId: page._id.toString(), // <--- inject this into the rendered HTML
     });
-    
+
     console.log("[RESULT] Page code rendered: ", code);
 
     console.log("[STEP] Saving page to database...");
-    
-    page.pageCode = code
+
+    page.pageCode = code;
 
     await page.save();
 
-    const user = await User.findById(req.user._id)
+    const user = await User.findById(req.user._id);
 
-    if (!user) return res.status(404).json({message: "User not found"})
+    if (!user) return res.status(404).json({ message: "User not found" });
 
-    user.usage.totalPages++
+    user.usage.totalPages++;
 
-    user.save()
+    user.save();
     console.log("[RESULT] Page saved successfully");
 
     return res.status(201).json({ message: "Page created successfully", page });
@@ -142,9 +142,13 @@ export const deletePage = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const deletedPage = await Page.findOneAndDelete({ _id: id, userId: req.user._id });
+    const deletedPage = await Page.findOneAndDelete({
+      _id: id,
+      userId: req.user._id,
+    });
 
-if (!deletedPage) return res.status(404).json({ message: "Page not found or not yours" });
+    if (!deletedPage)
+      return res.status(404).json({ message: "Page not found or not yours" });
 
     return res
       .status(201)
@@ -181,7 +185,6 @@ export const publishPage = async (req, res) => {
       pathName: page.pathName,
       pageLink: page.pageLink,
     });
-
   } catch (error) {
     return res
       .status(500)
@@ -189,17 +192,27 @@ export const publishPage = async (req, res) => {
   }
 };
 
+export const updatePage = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { heading } = req.body;
+  } catch (error) {}
+};
 
-
-export const updatePage = async(req, res) => {
+export const captureView = async (req, res) => {
   try {
 
-    const {id} = req.params
-    const {heading} = req.body
+    const { pageId } = req.params;
 
+  await Page.findByIdAndUpdate(pageId, {
+    $inc: { views: 1 },
+  });
 
+  return res.status(200).json({ message: "View captured" });
     
   } catch (error) {
-    
+    return res
+      .status(500)
+      .json({ error: "Internal Server Error", details: error.message });
   }
-}
+};
