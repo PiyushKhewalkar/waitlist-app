@@ -97,6 +97,8 @@ Instructions:
 - Match the tone and style implied by the schema.
 - Output ONLY the filled schema as a JSON object.
 - Do not include explanations, comments, or any extra text.
+- Write specific copy. specific to the product. Don't write generic copies like "Unlock Your Productivity Potential". Be specific.
+- Do not write made-up product names in copy until mentioned by the user
 
 requirement: ${requirement.requirement}`
 },
