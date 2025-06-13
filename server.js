@@ -15,6 +15,7 @@ import pageRouter from "./routes/page.routes.js"
 import authRouter from "./routes/auth.routes.js"
 import subscriberRouter from "./routes/subscriber.routes.js"
 import userRouter from "./routes/user.routes.js"
+import actionRouter from "./routes/actions.routes.js"
 
 const app = express()
 
@@ -30,6 +31,7 @@ app.use("/api/template", templateRouter)
 app.use("/api/auth", authRouter)
 app.use("/api/subscriber", subscriberRouter)
 app.use("/api/user", userRouter)
+app.use("/api/action", actionRouter)
 
 app.get("/public/:pathName", async (req, res) => {
   try {

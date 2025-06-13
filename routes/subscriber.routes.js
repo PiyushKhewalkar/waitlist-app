@@ -2,7 +2,7 @@ import { Router } from "express";
 
 import {getSubscribers, deleteSubscriber, exportToCSV, addSubscriber, updateSubscriber } from "../controllers/subscribers.controller.js";
 
-import authorize from "../middlewares/auth.middleware.js";
+import {authorize} from "../middlewares/auth.middleware.js";
 
 const subscriberRouter = Router()
 

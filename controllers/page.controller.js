@@ -192,13 +192,6 @@ export const publishPage = async (req, res) => {
   }
 };
 
-export const updatePage = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { heading } = req.body;
-  } catch (error) {}
-};
-
 export const captureView = async (req, res) => {
   try {
 

@@ -1,7 +1,7 @@
 export const planLimits = {
     free: {
-      totalPages: 100,
-      totalEmails: 100,
+      totalPages: 10000,
+      totalEmails: 10000,
     },
     starter: {
       totalPages: 3,

@@ -2,7 +2,7 @@ import { Router } from "express";
 
 import { getPage, getPages, createPage, deletePage, publishPage, captureView } from "../controllers/page.controller.js";
 
-import authorize from "../middlewares/auth.middleware.js";
+import {authorize} from "../middlewares/auth.middleware.js";
 import { checkLimit } from "../middlewares/checkLimit.middlewear.js";
 
 const pageRouter = Router()
