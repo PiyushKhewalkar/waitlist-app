@@ -76,12 +76,12 @@ export const login = async (req, res) => {
         .status(404)
         .json({ success: false, message: "user doesn't exist" });
 
-    if (!user.isVerified) {
-    await emailVerification(user.email)
-      return res
-        .status(403)
-        .json({ message: "Please verify your email first, we have sent a verification link on your email" });
-    }
+    // if (!user.isVerified) {
+    // await emailVerification(user.email)
+    //   return res
+    //     .status(403)
+    //     .json({ message: "Please verify your email first, we have sent a verification link on your email" });
+    // }
 
     const isMatch = await bcrypt.compare(password, user.password);
 
