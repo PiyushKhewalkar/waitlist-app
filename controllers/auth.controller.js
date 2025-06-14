@@ -5,7 +5,7 @@ import GoogleStrategy from "passport-google-oauth20";
 import { OAuth2Client } from "google-auth-library";
 
 import nodemailer from "nodemailer";
-import { EMAIL_USERNAME, EMAIL_PASSWORD, JWT_SECRET, NODE_ENV, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } from "../config/env.js";
+import { EMAIL_USERNAME, EMAIL_PASSWORD, JWT_SECRET, NODE_ENV, GOOGLE_CLIENT_ID} from "../config/env.js";
 
 import emailVerification from "../utils/tokenSender.js";
 
@@ -248,7 +248,7 @@ export const googleLogin = async (req, res) => {
 
     const ticket = await client.verifyIdToken({
       idToken: token,
-      audience: process.env.GOOGLE_CLIENT_ID,
+      audience: GOOGLE_CLIENT_ID,
     });
 
     const payload = ticket.getPayload();
@@ -256,7 +256,13 @@ export const googleLogin = async (req, res) => {
 
     let user = await User.findOne({ email });
 
-    if (!user) {
+    if (user) {
+      if (user.authProvider !== "google") {
+        return res.status(400).json({
+          error: "This email is already registered using password. Please log in using email/password.",
+        });
+      }
+    } else {
       user = await User.create({
         email,
         name,
@@ -268,7 +274,7 @@ export const googleLogin = async (req, res) => {
 
     const jwtToken = jwt.sign(
       { id: user._id, email: user.email },
-      process.env.JWT_SECRET,
+      JWT_SECRET,
       { expiresIn: "7d" }
     );
 
@@ -276,4 +282,5 @@ export const googleLogin = async (req, res) => {
   } catch (err) {
     console.error("Google login error:", err);
     res.status(401).json({ error: "Invalid Google Token" });
-  }}
+  }
+};
