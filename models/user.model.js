@@ -1,57 +1,71 @@
 import mongoose from "mongoose";
 
-const userSchema = new mongoose.Schema({
-    email : {
-        type: String,
-        unique: true,
-        required: true,
-        match: [/^\S+@\S+\.\S+$/, 'Invalid email format']
+const userSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
     },
-    password : {
-        type: String,
-        required: true
+    email: {
+      type: String,
+      unique: true,
+      required: true,
+      match: [/^\S+@\S+\.\S+$/, "Invalid email format"],
+    },
+    password: {
+      type: String,
+      required: function () {
+        return !this.googleId;
+      },
+    },
+    googleId: {
+      type: String,
+    },
+    authProvider: {
+      type: String,
+      enum: ["email", "google"],
+      default: "email",
     },
     isVerified: {
-        type: Boolean,
-        default: false,
-        required: true
+      type: Boolean,
+      default: false,
+      required: true,
     },
     role: {
-        type: String,
-        enum: ["admin", "user"],
-        default: "user",
-        required: true
+      type: String,
+      enum: ["admin", "user"],
+      default: "user",
+      required: true,
     },
     resetOtp: {
-        type: String,
-        default: ""
+      type: String,
+      default: "",
     },
     resetOtpExpireAt: {
-        type: Number,
-        default: 0
+      type: Number,
+      default: 0,
     },
     verificationToken: {
-        type: String
+      type: String,
     },
-    plan : {
-        type: String,
-        enum: ["free", "starter", "pro", "growth"],
-        default: "free"
+    plan: {
+      type: String,
+      enum: ["free", "starter", "pro", "growth"],
+      default: "free",
     },
     usage: {
-        totalPages : {
-            type: Number,
-            default: 0
-        },
-        totalEmails: {
-            type: Number,
-            default: 0
-        }
-    }
+      totalPages: {
+        type: Number,
+        default: 0,
+      },
+      totalEmails: {
+        type: Number,
+        default: 0,
+      },
+    },
+  },
+  { timestamps: true }
+);
 
-},
-{timestamps: true})
+const User = mongoose.model("User", userSchema);
 
-const User = mongoose.model("User", userSchema)
-
-export default User
+export default User;

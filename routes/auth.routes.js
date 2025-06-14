@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { register, login, logout, verifyEmail, resendEmailVerification, resetPassword, sendResetOtp } from "../controllers/auth.controller.js";
+import { register, login, logout, verifyEmail, resendEmailVerification, resetPassword, sendResetOtp, googleLogin } from "../controllers/auth.controller.js";
 
 const authRouter = Router()
 
@@ -17,5 +17,8 @@ authRouter.post("/resendemailverification", resendEmailVerification)
 authRouter.post("/sendresetotp", sendResetOtp)
 
 authRouter.post("/resetpassword", resetPassword)
+
+authRouter.post("/google-login", googleLogin)
+
 
 export default authRouter

@@ -1,7 +1,11 @@
 import User from "../models/user.model.js";
 
+import passport from "passport";
+import GoogleStrategy from "passport-google-oauth20";
+import { OAuth2Client } from "google-auth-library";
+
 import nodemailer from "nodemailer";
-import { EMAIL_USERNAME, EMAIL_PASSWORD, JWT_SECRET, NODE_ENV } from "../config/env.js";
+import { EMAIL_USERNAME, EMAIL_PASSWORD, JWT_SECRET, NODE_ENV, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } from "../config/env.js";
 
 import emailVerification from "../utils/tokenSender.js";
 
@@ -234,3 +238,42 @@ export const resetPassword = async(req, res) => {
     return res.status(500).json({ success: false, message: "Server error." });
   }
 }
+
+
+const client = new OAuth2Client(GOOGLE_CLIENT_ID);
+
+export const googleLogin = async (req, res) => {
+  try {
+    const { token } = req.body;
+
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+    const { email, name, sub: googleId } = payload;
+
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      user = await User.create({
+        email,
+        name,
+        googleId,
+        isVerified: true,
+        authProvider: "google",
+      });
+    }
+
+    const jwtToken = jwt.sign(
+      { id: user._id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    res.json({ token: jwtToken, user });
+  } catch (err) {
+    console.error("Google login error:", err);
+    res.status(401).json({ error: "Invalid Google Token" });
+  }}
